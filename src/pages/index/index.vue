@@ -187,6 +187,7 @@ export default {
       } else {
         this.completed = true
         this.stopTimer()
+        return 
       }
 
 
