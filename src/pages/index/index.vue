@@ -6,17 +6,15 @@
         <view class="timer_progress timer_left">
           <view
             class="timer_circle timer_circle--left"
-            :style="`transform: rotate({{leftDeg}}deg);`"
           ></view>
         </view>
         <view class="timer_progress timer_right">
           <view
             class="timer_circle timer_circle--right"
-            :style="`transform: rotate({{rightDeg}}deg);`"
           ></view>
         </view>
         <text v-if="!completed" class="timer_time">{{ remainTimeText }}</text>
-        <text v-if="isRunning" :animation="nameAnimation" class="timer_taskName"
+        <text v-if="isRunning" :animation="nameAnimation" class="timer_taskName" 
           >{{ taskName }}{{ completed ? "已完成！" : "中" }}</text
         >
         <image
@@ -27,10 +25,10 @@
       </view>
       <input
         type="text"
-        placeholder-style="text-align:center"
+        placeholder-style="text-align:center; color:#bfbfbf"
         class="timer_inputname"
-        @input="changeLogName"
         placeholder="自定义任务名"
+        v-model.trim="taskName"
       />
     </view>
 
@@ -60,7 +58,6 @@
 import { formatTime, getTime } from "@/utils/date";
 import {get, set} from '@/utils/local'
 import dayjs from 'dayjs'
-const templateId = "OFEAr11jqhgpU_imwX6A7xTy2ckcxRMNa3kE8-d7CQI";
 
 const defaultLogName = {
   work: "工作",
@@ -81,6 +78,7 @@ export default {
     return {
       remainTimeText: "",
       timerType: "work",
+      taskName: '',
       log: {},
       completed: false,
       isRunning: false,
@@ -108,6 +106,7 @@ export default {
       if (this.timer) clearInterval(this.timer)
 			let startTime = Date.now()
 			let startTimeShow = getTime()
+      this.isRunning = !this.isRunning
 			console.log(startTime, startTimeShow, e.target.dataset.type)
 			this.timerType = e.target.dataset.type
 
@@ -119,7 +118,7 @@ export default {
 
 			console.log(showTime, keepTime)
 			this.vibshort()
-			if (!this.isRunning) {
+			if (this.isRunning) {
 				this.timer = setInterval(() => {
 					this.updateTimer()
 					this.startNameAnimation()
@@ -235,13 +234,14 @@ export default {
 			this.nameAnimation = animation.export()
 		},
 		changeLogName(e) {
-			this.logName = e.target.value
+      console.log('input', e)
+			this.taskName = e.target.value 
 		}
 	},
 };
 </script>
 
-<style>
+<style scoped>
 page {
   background-color: #ffffff;
 }
