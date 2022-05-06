@@ -6,11 +6,13 @@
         <view class="timer_progress timer_left">
           <view
             class="timer_circle timer_circle--left"
+            :style="`transform: rotate(${leftDeg}deg);`"
           ></view>
         </view>
         <view class="timer_progress timer_right">
           <view
             class="timer_circle timer_circle--right"
+            :style="`transform: rotate(${rightDeg}deg);`"
           ></view>
         </view>
         <text v-if="!completed" class="timer_time">{{ remainTimeText }}</text>
@@ -96,27 +98,31 @@ export default {
 		if (this.isRunning) return 
 		let workTime = formatTime(get('workTime'), 'HH')
 		let restTime = formatTime(get('restTime'), 'HH')
-		console.log(workTime, restTime)
 		this.workTime = workTime 
 		this.restTime = restTime
 		this.remainTimeText = workTime + ':00'
 	},
   methods: {
 		startTimer(e) {
-      if (this.timer) clearInterval(this.timer)
-			let startTime = Date.now()
+      this.completed = false
+      let startTime = Date.now()
 			let startTimeShow = getTime()
       this.isRunning = !this.isRunning
-			console.log(startTime, startTimeShow, e.target.dataset.type)
 			this.timerType = e.target.dataset.type
 
 			let showTime = this[this.timerType + 'Time']
 
 			let keepTime = showTime * 60 * 1000
 
-			let logName = this.logName || defaultLogName[this.timerType]
+      this.keepTime = keepTime
 
-			console.log(showTime, keepTime)
+			let logName = this.logName || defaultLogName[this.timerType]
+      if (this.timer) { 
+        this.remainTimeText = showTime + ':00'
+        clearInterval(this.timer)
+      } 
+			
+
 			this.vibshort()
 			if (this.isRunning) {
 				this.timer = setInterval(() => {
@@ -159,62 +165,34 @@ export default {
 			}
 		},
 		updateTimer() {
-			// let now = Date.now()
-			// let log = this.log
-			// let remainingTime = Math.round((log.endTime - now) / 1000)
-			// let H = formatTime(Math.floor(remainingTime) / (60 * 60) % 24, 'HH')
-			// let M = formatTime(Math.floor(remainingTime) / (60) % 60, 'MM')
-			// let S = formatTime(Math.floor(remainingTime) % 60, 'SS')
+			
 
-			// let halfTime 
-			// if (remainingTime > 0)  {
-			// 	this.remainTimeText = `${H === '00' ? `${M}:${S}` : `${H}:${M}:${S}`}`
-			// } else if (remainingTime === 0) {
-			// 	this.completed = true 
-			// 	this.stopTimer()
-			// 	return 
-			// }
+      this.keepTime -= 1000
+      if (this.keepTime > 0) {
 
-			// halfTime = this.log.keepTime / 2 
-			// if (remainingTime * 1000 > halfTime) {
-			// 	this.leftDeg = initDeg.left - (180 * (now - log.startTime) / halfTime)
-			// } else {
-			// 	this.leftDeg = -135 
-			// 	this.rightDeg = initDeg.right - (180 * (now - (log.startTime + halfTime)) / halfTime)
-			// }
-				// this.log.endTime = dayjs(this.log.endTime).subtract(1, 'seconds')
-				// const endTime = this.log.endTime
-				// const startTime = this.log.startTime
-				// const startHour = dayjs(startTime).hour()
-				// const startMinute = dayjs(startTime).minute()
-				// const startSecond = dayjs(startTime).second()
-
-				// const endHour = dayjs(endTime).hour()
-				// const endMinute = dayjs(endTime).minute()
-				// const endSecond = dayjs(endTime).second()
-	
-				// console.log(endHour - startHour,  endSecond - startSecond >= 0 ? endMinute - startMinute : endMinute - startMinute - 1, endSecond - startSecond >= 0 ? endSecond - startSecond : endSecond - startSecond + 60)
-
-				// console.log(dayjs.duration(this.log.endTime - this.log.startTime).hour(), dayjs.duration(this.log.endTime - this.log.startTime).minute(), dayjs.duration(this.log.endTime - this.log.startTime).second())
-
-      this.log.keepTime -= 1000
-      if (this.log.keepTime > 0) {
-
-        const {$d: {hours, minutes, seconds}} = dayjs.duration(this.log.keepTime)
-        this.remainTimeText = hours ? `${hours >= 10 ? hours : `0${hours}`}:${minutes >= 10 ? minutes: `0${minutes}`}:${seconds > 10 ? seconds : `0${seconds}`}` : `${minutes >= 10 ? minutes: `0${minutes}`}:${seconds > 10 ? seconds : `0${seconds}`}`
+        const {$d: {hours, minutes, seconds}} = dayjs.duration(this.keepTime)
+        this.remainTimeText = hours ? `${hours >= 10 ? hours : `0${hours}`}:${minutes >= 10 ? minutes: `0${minutes}`}:${seconds >= 10 ? seconds : `0${seconds}`}` : `${minutes >= 10 ? minutes: `0${minutes}`}:${seconds >= 10 ? seconds : `0${seconds}`}`
 
         // console.log(this.remainTimeText);
       } else {
         this.completed = true
+        this.stopTimer()
       }
 
 
 
-			// if (endHour - startHour > 0) {
-			// 	this.remainTimeText = `${endHour - startHour}:${endSecond - startSecond >= 0 ? endMinute - startMinute : endMinute - startMinute - 1}:${endSecond - startSecond >= 0 ? endSecond - startSecond : endSecond - startSecond + 60}`
-			// } else {
-			// 		this.remainTimeText = `${endSecond - startSecond >= 0 ? endMinute - startMinute : endMinute - startMinute - 1}:${endSecond - startSecond >= 0 ? endSecond - startSecond : endSecond - startSecond + 60}`
-			// }
+			// update circle progress
+      let halfTime 
+			
+      const now = Date.now()
+      const log = this.log
+			halfTime = this.log.keepTime / 2 
+			if (this.keepTime  > halfTime) {
+				this.leftDeg = initDeg.left - (180 * (now - log.startTime) / halfTime)
+			} else {
+				this.leftDeg = -135 
+				this.rightDeg = initDeg.right - (180 * (now - (log.startTime + halfTime)) / halfTime)
+			}
 
 			
 
