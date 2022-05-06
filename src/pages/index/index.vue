@@ -413,7 +413,7 @@ page {
   background-repeat: no-repeat;
 }
 
-.timer--runing .timer_ctrl {
+.timer--running .timer_ctrl {
   background-color: #6dade6;
   height: 70rpx;
   border-radius: 20px;
@@ -422,7 +422,7 @@ page {
   align-items: center;
   margin: 50rpx;
 }
-.timer--runing .timer_ctrl_2 {
+.timer--running .timer_ctrl_2 {
   background-color: #74cc74;
   height: 70rpx;
   border-radius: 20px;
@@ -434,32 +434,32 @@ page {
 
 /* .timer .timer_ctrl text {} */
 
-/*runing style*/
+/*running style*/
 
-.timer--runing .timer_main {
+.timer--running .timer_main {
   flex: 1;
 }
 
-.timer--runing .timer_time {
+.timer--running .timer_time {
   font-size: 45px;
 }
 
-.timer--runing .timer_time-wrap {
+.timer--running .timer_time-wrap {
   width: 200px;
   height: 200px;
 }
 
-.timer--runing .timer_progress {
+.timer--running .timer_progress {
   width: 100px;
   height: 200px;
 }
 
-.timer--runing .timer_circle {
+.timer--running .timer_circle {
   width: 200px;
   height: 200px;
 }
 
-.timer--runing .timer_footer {
+.timer--running .timer_footer {
   flex: 0;
   position: absolute;
   bottom: 0;
