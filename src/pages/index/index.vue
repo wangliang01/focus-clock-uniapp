@@ -30,7 +30,7 @@
         placeholder-style="text-align:center; color:#bfbfbf"
         class="timer_inputname"
         placeholder="自定义任务名"
-        v-model.trim="taskName"
+        v-model.trim="logName"
       />
     </view>
 
@@ -80,7 +80,6 @@ export default {
     return {
       remainTimeText: "",
       timerType: "work",
-      taskName: '',
       log: {},
       completed: false,
       isRunning: false,
@@ -90,8 +89,19 @@ export default {
 			workTime: "",
 			restTime: "",
 			timer: "",
-			nameAnimation: null
+			nameAnimation: null,
+      logName: ''
     };
+  },
+  computed: {
+    taskName() {
+      if (this.logName === '') {
+        return defaultLogName[this.timerType]
+      } else {
+        return this.logName
+
+      }
+    }
   },
   onLoad() {},
 	onShow() {
