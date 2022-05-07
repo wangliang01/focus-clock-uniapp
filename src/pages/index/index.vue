@@ -6,13 +6,13 @@
         <view class="timer_progress timer_left">
           <view
             class="timer_circle timer_circle--left"
-            :style="`transform: rotate(${leftDeg}deg);`"
+            :style="{transform: `rotate(${leftDeg}deg)`}"
           ></view>
         </view>
         <view class="timer_progress timer_right">
           <view
             class="timer_circle timer_circle--right"
-            :style="`transform: rotate(${rightDeg}deg);`"
+            :style="{transform: `rotate(${rightDeg}deg)`}"
           ></view>
         </view>
         <text v-if="!completed" class="timer_time">{{ remainTimeText }}</text>
@@ -89,8 +89,9 @@ export default {
 			workTime: "",
 			restTime: "",
 			timer: "",
-			nameAnimation: null,
-      logName: ''
+			nameAnimation: {},
+      logName: '',
+      animation: null
     };
   },
   computed: {
@@ -216,14 +217,18 @@ export default {
 			this.viblong()
 			this.timer && clearInterval(this.timer)
 		},
+    /* TODO: 名称动画，没有实现 */
 		startNameAnimation() {
-			let animation = uni.createAnimation({duration: 450})
+      if (!this.animation) {
+        this.animation = uni.createAnimation({duration: 450})
+      }
+      let animation = this.animation
 			animation.opacity(0.2).step()
 			animation.opacity(1).step()
-			this.nameAnimation = animation.export()
+      this.nameAnimation = animation.export()
+
 		},
 		changeLogName(e) {
-      console.log('input', e)
 			this.taskName = e.target.value 
 		}
 	},
